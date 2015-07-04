@@ -4,8 +4,8 @@
 module texture;
 
 import derelict.opengl3.gl3;
-import std.stdio, std.random;
 import kernel;
+import std.stdio,std.random;
 
 class Texture(Type)
 {

@@ -51,9 +51,9 @@ ig_Image(cast(void*)t2.id, ImVec2(512,512));
 
 ### Todo ###
 
-* fix resizing
 * test on linux and mac
 * port shadertoy params to compute
+* fix true N-dimensional textures 1D and 3D cases
 * import/output pipeline
 * gpu examples tree IMGUI class
 * get rid of dynamic binding dependencies, e.g. link directly to C-APIs
