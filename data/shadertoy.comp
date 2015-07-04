@@ -1,0 +1,22 @@
+#version 430
+
+uniform vec3      iResolution;           // viewport resolution (in pixels)
+uniform float     iGlobalTime;           // shader playback time (in seconds)
+uniform float     iChannelTime[4];       // channel playback time (in seconds)
+uniform vec3      iChannelResolution[4]; // channel resolution (in pixels)
+uniform vec4      iMouse;                // mouse pixel coords. xy: current (if MLB down), zw: 
+uniform sampler2D iChannel2;          	// input channel. XX = 2D/Cube
+uniform vec4      iDate;                 // (year, month, day, time in seconds)
+uniform float     iSampleRate;           // sound sample rate (i.e., 44100)
+
+layout (binding=0) writeonly uniform image2D destTex;
+layout (local_size_x = 16, local_size_y = 16) in;
+
+void main()
+{
+	ivec2 storePos = ivec2(gl_GlobalInvocationID.xy);
+	float localCoef = length(vec2(ivec2(gl_LocalInvocationID.xy)-8)/8.0);
+	float globalCoef = sin(float(gl_WorkGroupID.x+gl_WorkGroupID.y)*0.1 + iGlobalTime*5)*0.5;
+	
+	imageStore(destTex, storePos, vec4(iMouse.x/iResolution.x-globalCoef*localCoef, iMouse.y/iResolution.y-globalCoef*localCoef*0.5, 1-globalCoef*localCoef*0.5, 1.0));
+}

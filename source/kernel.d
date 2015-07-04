@@ -3,7 +3,7 @@
 
 module kernel;
 
-import derelict.opengl3.gl3;
+import gl3n.linalg, derelict.opengl3.gl3;
 import std.string, std.stdio;
 import texture;
 
@@ -34,25 +34,24 @@ class Kernel
 
 	void execute()
 	{
-		static int frame = 0;
+
 		glUseProgram(id);
-		glUniform1f(glGetUniformLocation(id, "roll"), cast(float)(++frame)*0.1f);
+		//glUniform1f(glGetUniformLocation(id, "roll"), cast(float)(++frame)*0.1f);
 		glDispatchCompute(512/16, 512/16, 1); // 512^2 threads in blocks of 16^2
 		glMemoryBarrier(GL_ALL_BARRIER_BITS);
 		checkErrors("dispatch compute shader");
 	}
 
-	void upload(Texture!(float) t, string location)
+	void upload(string location, float x) { glUseProgram(id); glUniform1f(glGetUniformLocation(id, toStringz(location)), x); }
+	void upload(string location, vec3  x) { glUseProgram(id); glUniform3f(glGetUniformLocation(id, toStringz(location)), x.x, x.y, x.z); }
+	void upload(string location, vec4  x) { glUseProgram(id); glUniform4f(glGetUniformLocation(id, toStringz(location)), x.x, x.y, x.z, x.w); }
+
+	void upload(string location, Texture!(float) t)
 	{
 		glUseProgram(id);
-
-		glBindTexture(GL_TEXTURE_2D, t.id);
-
-		glUniform1i(glGetUniformLocation(id, cast(char*)toStringz(location)), 0); // 0= O'RLY!?
-
-		glBindImageTexture(0, t.id, 0, GL_FALSE, 0, GL_READ_WRITE, GL_RGBA32F);
-
-		 // from kernel code: make texture accessable for writing
+		//glBindTexture(GL_TEXTURE_2D, t.id);
+		// glUniform1i(glGetUniformLocation(id, cast(char*)toStringz(location)), 0); // 0= O'RLY!?
+		glBindImageTexture(0, t.id, 0, GL_FALSE, 0, GL_READ_WRITE, GL_RGBA32F); // RGBA32F = O'RLY!?
 		checkErrors("upload");
 	}
 
@@ -79,10 +78,11 @@ class Kernel
 			case GL_INVALID_ENUM :					writeln(location, ": ", "Invalid enum"); break;
 			case GL_INVALID_VALUE :					writeln(location, ": ", "Invalid value"); break;
 			case GL_INVALID_OPERATION :				writeln(location, ": ", "Invalid operation"); break;
-		//	case GL_STACK_OVERFLOW :				writeln(location, ": ", "Stack overflow"); break;
-		//	case GL_STACK_UNDERFLOW :				writeln(location, ": ", "Stack underflow"); break;
+			case 0x0503 : /*GL_STACK_OVERFLOW :*/	writeln(location, ": ", "Stack overflow"); break;
+			case 0x0504 : /*GL_STACK_UNDERFLOW :*/	writeln(location, ": ", "Stack underflow"); break;
 			case GL_OUT_OF_MEMORY :					writeln(location, ": ", "OpenGL out of memory"); break;
 			case GL_INVALID_FRAMEBUFFER_OPERATION : writeln(location, ": ", "Invalid framebuffer operation"); break;
+			case GL_CONTEXT_LOST :					writeln(location, ": ", "OpenGL context lost"); break;
 			default:								writeln(location, ": ", "Unknown error code: "); break;
 		}
 	}

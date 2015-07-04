@@ -1,7 +1,7 @@
 ﻿module app;
 
-import derelict.opengl3.gl3,derelict.glfw3.glfw3,derelict.imgui.imgui;
-import std.string;
+import std.stdio, derelict.opengl3.gl3,derelict.glfw3.glfw3,derelict.imgui.imgui;
+import gl3n.linalg, core.time, std.string, std.file;
 import texture,kernel,imgui;
 
 class App
@@ -39,19 +39,8 @@ class App
 		t3.upload();
 		
 		// GPU compute kernel
-		k = new Kernel(
-			"#version 430\n"
-			"uniform float roll;\n"
-			"layout (binding=0) writeonly uniform image2D destTex;\n"
-			"layout (local_size_x = 16, local_size_y = 16) in;\n"
-			"void main() {\n"
-			"\tivec2 storePos = ivec2(gl_GlobalInvocationID.xy);\n"
-			"\tfloat localCoef = length(vec2(ivec2(gl_LocalInvocationID.xy)-8)/8.0);\n"
-			"\tfloat globalCoef = sin(float(gl_WorkGroupID.x+gl_WorkGroupID.y)*0.1 + roll)*0.5;\n"
-			"\timageStore(destTex, storePos, vec4(1-globalCoef*localCoef, 1-globalCoef*localCoef*0.5, 1-globalCoef*localCoef*0.5, 1.0));\n"
-			"}"
-			);
-		k.upload(t2, "destTex");
+		k = new Kernel(std.file.readText("data/shadertoy.comp"));
+		k.upload("destTex", t2);
 		k.execute();
 	}
 
@@ -59,9 +48,15 @@ class App
 	{
 		ImGuiIO* io = ig_GetIO();
 		glfwPollEvents();
-		
+
 		for (uint i=0; i<t3.data.length; ++i) t3.data[i] = std.random.uniform(0.0f, 1.0f);
 		t3.upload();
+
+		// send shadertoy params
+		double mouseX, mouseY; glfwGetCursorPos(window, &mouseX, &mouseY);
+		k.upload("iResolution", vec3(io.DisplaySize.x, io.DisplaySize.y, 0));
+		k.upload("iGlobalTime", glfwGetTime());
+		k.upload("iMouse", vec4(mouseX,mouseY,0,0));
 		k.execute();
 
 		ImGuiNewFrame();
