@@ -1,0 +1,14 @@
+{
+	"name": "cgim",
+	"description": "Computer Graphics Image Processing Framework.",
+	"authors": ["Chris Willcocks, Boguslaw Obara"],
+	"homepage": "https://www.dur.ac.uk/ecs/",
+	"license": "MIT",
+	"mainSourceFile": "source/main.d",
+	"targetType": "executable",
+	"dependencies": {
+		"derelict-gl3": "~>1.0.13",
+		"derelict-glfw3": "~>1.1.0",
+		"derelict-imgui": "~>0.3.0",
+	}
+}
