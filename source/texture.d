@@ -2,7 +2,6 @@
 // License: GNU General Public License Version 3
 
 module texture;
-
 import derelict.opengl3.gl3;
 import kernel;
 import std.stdio,std.random;
@@ -25,34 +24,34 @@ class Texture(Type)
 
 		glGenTextures(1, &id);
 
-		if (N == 2)
-		{
-			glBindTexture(GL_TEXTURE_2D, id);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_MIRRORED_REPEAT);
-		}
+		glBindTexture(getDimensionEnum(), id);
+		glTexParameteri(getDimensionEnum(), GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTexParameteri(getDimensionEnum(), GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(getDimensionEnum(), GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
+		glTexParameteri(getDimensionEnum(), GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
+		glTexParameteri(getDimensionEnum(), GL_TEXTURE_WRAP_R, GL_MIRRORED_REPEAT);
 	}
 
-	~this()
+	uint getDimensionEnum()
 	{
+		if (N == 1) return GL_TEXTURE_1D;
+		if (N == 2) return GL_TEXTURE_2D;
+		if (N == 3) return GL_TEXTURE_3D;
+		return GL_TEXTURE_2D;
 	}
 
 	void upload()
 	{
+		glBindTexture(getDimensionEnum(), id);
+
 		if (N == 2)
-		{
-			glBindTexture(GL_TEXTURE_2D, id);
-			glTexImage2D(GL_TEXTURE_2D, 0,
+			glTexImage2D(getDimensionEnum(), 0,
 				GL_RGBA32F,
 				size[0], size[1],
 				0,
 				GL_RGBA,
 				GL_FLOAT,
 				&data[0]);
-		}
 
 		Kernel.checkErrors("texture upload");
 	}

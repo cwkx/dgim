@@ -34,11 +34,10 @@ class Kernel
 
 	void execute()
 	{
-
 		glUseProgram(id);
 		//glUniform1f(glGetUniformLocation(id, "roll"), cast(float)(++frame)*0.1f);
-		glDispatchCompute(512/16, 512/16, 1); // 512^2 threads in blocks of 16^2
-		glMemoryBarrier(GL_ALL_BARRIER_BITS);
+		glDispatchCompute(256/16, 256/16, 1); // 512^2 threads in blocks of 16^2
+
 		checkErrors("dispatch compute shader");
 	}
 
