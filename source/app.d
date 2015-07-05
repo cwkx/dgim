@@ -68,15 +68,15 @@ class App
 		if (windowOpen)
 		{
 			ig_Begin("Image Processing", &windowOpen, ImGuiWindowFlags_NoScrollbar); // | 
-			ig_Columns(2, "columns");
 			ImVec2 size;
 			ig_GetWindowSize(&size); size.x = max(size.x, 256); size.y = max(size.y,256);
+			ig_Image(cast(void*)t2.id, size);
+			/*ig_Columns(2, "columns");
 			ig_Image(cast(void*)t2.id, ImVec2(ig_GetColumnWidth(0)-10, size.y)); ig_NextColumn();
-			ig_InputTextMultiline("", cast(char*)toStringz(k.code), 10240, ImVec2(size.x-ig_GetColumnWidth(0), size.y)); 
-
+			ig_InputTextMultiline("", cast(char*)toStringz(k.code), 10240, ImVec2(size.x-ig_GetColumnWidth(0), size.y)); */
 			ig_End();
 		}
-		ig_ShowTestWindow();
+		ig_ShowMetricsWindow();
 
 		ig_Image(cast(void*)t1.id, ImVec2(128,128)); ig_SameLine();
 		ig_Image(cast(void*)t3.id, ImVec2(128,128));
