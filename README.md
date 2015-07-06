@@ -42,18 +42,20 @@ ig_Image(cast(void*)t2.id, ImVec2(512,512));
 
 * Download D compiler (very small) http://dlang.org/download.html
 * Download DUB package manager (very smaller) http://code.dlang.org/download
-* Make sure both binaries for dmd and dub are in PATH (restart if necessary)
+* Make sure dub (and dmd) is in the PATH (restart if necessary)
 * Download Xamarin Studio (lightweight, free IDE) http://www.monodevelop.com/download/
-* In Xamarin, goto Tools > Add-in Manager > Gallery > Refresh > Language Bindings > Install D language bindings
+* (You may need to point Xamarin DUB to its full path location)
+* In Xamarin, goto Main/Tools > Add-in Manager > Gallery > Refresh > Language Bindings > Install D language bindings
 * In Xamarin, open dub.json to load this project!
-* Although it should compile, you need to add two dynamic binaries next to executable http://www.glfw.org/download.html and https://github.com/Extrawurst/cimgui
+* You may need to add two dynamic binaries next to executable http://www.glfw.org/download.html and https://github.com/Extrawurst/cimgui
 
 
 ### Todo ###
 
-* test on linux and mac
-* port shadertoy params to compute
-* fix true N-dimensional textures 1D and 3D cases
+* test on linux
+* consider porting compute pipeline to OpenCL for MAC
+* port shadertoy params to compute (mostly done)
+* fix true N-dimensional textures 1D and 3D cases (mostly done)
 * import/output pipeline
 * gpu examples tree IMGUI class
 * get rid of dynamic binding dependencies, e.g. link directly to C-APIs

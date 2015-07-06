@@ -30,8 +30,8 @@ class App
 		
 		// Texture 2 example
 		t2 = new Texture!(float)();
-		t2.size = [256,256];
-		t2.data.length = 256*256*t2.C;
+		t2.size = [512,512];
+		t2.data.length = 512*512*t2.C;
 		t2.data[0..t2.data.length] = 0.2f;
 		for (uint i=0; i<t2.data.length; i+=3) t2.data[i] = std.random.uniform(0.0f, 1.0f);
 		t2.upload();
